@@ -3,34 +3,28 @@ uses crt;
 
 var
   Menu, Jumlah, i, JumlahBeli: integer;
-  Nama: string;
+  Nama, konfirm_akhir, Member: string;
   Harga, TotalHargaBarang: real;
-  TotalBelanjaAwal, Diskon, TotalBelanja: real;
+  TotalBelanjaAwal, Diskon, TotalBelanja, TotalBelanjamember: real;
   Bayar, Kembalian: real;
 
-begin
-  repeat
-    clrscr;
-    
-    writeln('KASIR SIMPEL');
+begin clrscr;
+// TAMPILAN AWAL ____________________________________________________________________
+writeln('_____________________________________________________________________');
+writeln('                          SELAMAT DATANG DI                          ');
+writeln('                    MART GAJE (GAMPANG DAN JELAS)                    ');
+writeln('                     Jl. Suka-suka no.20 Medan                       ');
+writeln('_____________________________________________________________________');
 
-    writeln('1. Hitung Belanja');
-    writeln('2. Keluar');
-    
+    while true do 
+    begin
 
-    write('Pilih menu: ');
-    readln(Menu);
-
-    case Menu of
-      1:
-        begin
-          clrscr;
-
-          TotalBelanjaAwal := 0;
+    //TOTAL BELANJA AWAL
+          TotalBelanjaAwal := 0;//inisialisasi agar menampung total belanja sebelumnya saat ngeloop
 
           writeln('INPUT DATA BARANG');
-          repeat
-            write('Jumlah jenis barang: ');
+          repeat // perulangan agar tidak ada jumlah barang < 0________________
+            write('Jumlah barang: ');
             readln(Jumlah);
 
             if Jumlah <= 0 then
@@ -42,19 +36,19 @@ begin
             writeln;
             writeln('Barang ke-', i);
 
-            write('Nama barang: ');
+            write('Nama barang    : ');
             readln(Nama);
 
-            repeat
-              write('Harga satuan: Rp');
+            repeat// perulangan agar tidak ada harga barang < 0________________
+              write('Harga satuan   : Rp');
               readln(Harga);
 
               if Harga <= 0 then
                 writeln('Harga harus lebih dari 0!');
             until Harga > 0;
 
-            repeat
-              write('Jumlah beli: ');
+            repeat// perulangan agar tidak ada harga barang < 0________________
+              write('Jumlah beli    : ');
               readln(JumlahBeli);
 
               if JumlahBeli <= 0 then
@@ -64,10 +58,11 @@ begin
             TotalHargaBarang := Harga * JumlahBeli;
             TotalBelanjaAwal := TotalBelanjaAwal + TotalHargaBarang;
 
-            writeln('Total harga ', Nama, ': Rp', TotalHargaBarang:0:0);
+            writeln('Total harga    : Rp', TotalHargaBarang:0:0);
           end;
 
-          { Menghitung diskon }
+    //DISKON
+          { Menghitung diskon (flat diskon)}
           if TotalBelanjaAwal >= 100000 then
             Diskon := TotalBelanjaAwal * 0.05
           else
@@ -75,56 +70,66 @@ begin
 
           { Menghitung total setelah diskon }
           TotalBelanja := TotalBelanjaAwal - Diskon;
-
-          { Menampilkan struk belanja }
+          
+          //diskon untuk member(flat diskon)
           writeln;
-          writeln('STRUK BELANJA');
+          write('Apakah anda mempunyai kartu member [y/n]: '); readln (member);
 
-          writeln('Total belanja awal : Rp', TotalBelanjaAwal:0:0);
-          writeln('Diskon             : Rp', Diskon:0:0);
-          writeln('Total setelah diskon: Rp', TotalBelanja:0:0);
+            
 
-          { Validasi pembayaran }
+    //Menampilkan struk belanja
+          writeln;
+          writeln('-------------STRUK BELANJA-------------');
+
+          writeln('Total belanja awal   : Rp', TotalBelanjaAwal:0:0);
+          writeln('Diskon               : Rp', Diskon:0:0);
+
+          if member = 'y' then //muncul ketika ada kartu member
+          begin
+            writeln('Diskon Member        : Rp', 0.03 * TotalBelanja :0:0);
+            TotalBelanjamember := 0.97 * TotalBelanja;
+            writeln('Pajak                : Rp', TotalBelanjamember * 0.12:0:0);
+            writeln('Total bayar  : Rp', TotalBelanjamember * 0.88 :0:0);
+          end
+          else // muncul untuk non member
+          begin
+            writeln('Pajak                : Rp', TotalBelanja * 0.12:0:0);
+            writeln('Total bayar  : Rp', TotalBelanja* 0.88 :0:0);
+          end;
+
+          
+
+    //Validasi pembayaran
           repeat
-            write('Uang pembayaran: Rp');
+            writeln;
+            write('Uang pembayaran      :Rp');
             readln(Bayar);
 
             if Bayar < TotalBelanja then
             begin
               writeln('Uang belum cukup!');
-              writeln('Kekurangan: Rp', (TotalBelanja - Bayar):0:0);
+              writeln('Kekurangan           :Rp', (TotalBelanja - Bayar):0:0);
             end;
           until Bayar >= TotalBelanja;
 
           Kembalian := Bayar - TotalBelanja;
 
           writeln;
-          writeln('Pembayaran : Rp', Bayar:0:0);
-          writeln('Kembalian : Rp', Kembalian:0:0);
-
-          writeln('Terima kasih telah berbelanja!');
-
-          writeln;
-          write('Tekan Enter untuk kembali ke menu...');
-          readln;
+          writeln('Pembayaran           :Rp', Bayar:0:0);
+          writeln('Kembalian            :Rp', Kembalian:0:0);
+    
+    //KONFIRMASI AKHIR
+          write('Apakah anda ingin melakukan perhitungan lagi? [y/n]'); readln(konfirm_akhir);
+          if konfirm_akhir = 'n' then
+          begin
+            break;
+          end;
+          
         end;
 
-      2:
-        begin
-          writeln;
-          writeln('Terima kasih telah berbelanja!');
-        end;
+//TAMPILAN AKHIR
+writeln;
+writeln('__________________Terima kasih telah berbelanja!_____________________');
+writeln('________Barang yang sudah dibeli tidak bisa ditukar kembali__________');
 
-      else
-        begin
-          writeln;
-          writeln('Menu tidak tersedia!');
-          writeln('Silakan pilih menu 1 atau 2.');
-          writeln;
-          write('Tekan Enter untuk kembali ke menu...');
-          readln;
-        end;
-    end;
-
-  until Menu = 2;
 end.
