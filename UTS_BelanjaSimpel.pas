@@ -6,7 +6,7 @@ var
   Nama, konfirm_akhir, Member: string;
   Harga, TotalHargaBarang: real;
   TotalBelanjaAwal, Diskon, TotalBelanja, TotalBelanjamember: real;
-  Bayar, Kembalian: real;
+  Pajak, TotalBayar, Bayar, Kembalian: real;
 
 begin clrscr;
 // TAMPILAN AWAL ____________________________________________________________________
@@ -75,29 +75,26 @@ writeln('_____________________________________________________________________')
           writeln;
           write('Apakah anda mempunyai kartu member [y/n]: '); readln (member);
 
-            
-
+          //Menghitung Diskon Member dan Pajak
+          if (member = 'y') or (member = 'Y') then //muncul ketika ada kartu member
+          begin
+          TotalBelanjamember := TotalBelanja * 0.03;
+          TotalBelanja := TotalBelanja - TotalBelanjamember;
+          end
+          else // muncul untuk non member
+          TotalBelanjamember := 0;
+          Pajak := TotalBelanja * 0.12;
+          TotalBayar := TotalBelanja + Pajak;
+  
     //Menampilkan struk belanja
           writeln;
           writeln('-------------STRUK BELANJA-------------');
 
           writeln('Total belanja awal   : Rp', TotalBelanjaAwal:0:0);
           writeln('Diskon               : Rp', Diskon:0:0);
-
-          if member = 'y' then //muncul ketika ada kartu member
-          begin
-            writeln('Diskon Member        : Rp', 0.03 * TotalBelanja :0:0);
-            TotalBelanjamember := 0.97 * TotalBelanja;
-            writeln('Pajak                : Rp', TotalBelanjamember * 0.12:0:0);
-            writeln('Total bayar  : Rp', TotalBelanjamember * 0.88 :0:0);
-          end
-          else // muncul untuk non member
-          begin
-            writeln('Pajak                : Rp', TotalBelanja * 0.12:0:0);
-            writeln('Total bayar  : Rp', TotalBelanja* 0.88 :0:0);
-          end;
-
-          
+          writeln('Diskon Member        : Rp', TotalBelanjamember:0:0);
+          writeln('Pajak                : Rp', Pajak:0:0);
+          writeln('Total bayar          : Rp', TotalBayar:0:0);
 
     //Validasi pembayaran
           repeat
@@ -105,14 +102,14 @@ writeln('_____________________________________________________________________')
             write('Uang pembayaran      :Rp');
             readln(Bayar);
 
-            if Bayar < TotalBelanja then
+            if Bayar < TotalBayar then
             begin
               writeln('Uang belum cukup!');
-              writeln('Kekurangan           :Rp', (TotalBelanja - Bayar):0:0);
+              writeln('Kekurangan           :Rp', (TotalBayar - Bayar):0:0);
             end;
-          until Bayar >= TotalBelanja;
+          until Bayar >= TotalBayar;
 
-          Kembalian := Bayar - TotalBelanja;
+          Kembalian := Bayar - TotalBayar;
 
           writeln;
           writeln('Pembayaran           :Rp', Bayar:0:0);
@@ -120,11 +117,8 @@ writeln('_____________________________________________________________________')
     
     //KONFIRMASI AKHIR
           write('Apakah anda ingin melakukan perhitungan lagi? [y/n]'); readln(konfirm_akhir);
-          if konfirm_akhir = 'n' then
-          begin
+          if (konfirm_akhir = 'n') or (konfirm_akhir = 'N') then
             break;
-          end;
-          
         end;
 
 //TAMPILAN AKHIR
